@@ -1,18 +1,25 @@
 {
-  "name": "zwiftleague",
+  "name": "zlresults",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.x"
+  },
   "description": "",
-  "main": "index.js",
+  "main": "main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node main.ts"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "@types/express": "^4.17.8",
     "@types/lodash": "^4.14.162",
     "@types/node": "^14.11.8",
+    "express": "^4.17.1",
     "lodash": "^4.17.20",
-    "then-request": "^6.0.2"
+    "then-request": "^6.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
   }
 }

@@ -1,8 +1,7 @@
 import request from 'then-request';
 import * as _ from 'lodash';
 
-//const eventId: string = '1121811'; // EMEA W (MEN) - Pool 2
-const eventId: string = '1128517'; // EMEA E (MEN) - Pool 6
+export type Category = 'A' | 'B' | 'C' | 'D' | 'E';
 
 type Rider = {
     "DT_RowId": string,
@@ -32,7 +31,7 @@ type Rider = {
     "tbc": string,
     "tbd": string,
     "zeff": number,
-    "category": 'A' | 'B' | 'C' | 'D' | 'E',
+    "category": Category,
     "zlteam"?: string;
     "zlscore"?: number;
     "zlprimespoints"?: number;
@@ -61,8 +60,8 @@ const individualRiderScores = [
     40, 35, 30, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2
 ];
 
-async function getPrimes(): Promise<Prime[]> {
-    const res = await request('GET', `https://www.zwiftpower.com/api3.php?do=event_primes&zid=${eventId}&category=B&prime_type=msec`);
+async function getPrimes(eventId:string, category: string): Promise<Prime[]> {
+    const res = await request('GET', `https://www.zwiftpower.com/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
     const {data}: { data: Prime[] } = JSON.parse(res.getBody('utf8'));
 
     // 6 = Watopia KOM Forward
@@ -85,8 +84,8 @@ function getPrimesPoints(primes: Prime[], zwid: number): number {
     return primesPoints;
 }
 
-async function getRiders(primes: Prime[]): Promise<Rider[]> {
-    const res = await request('GET', `https://www.zwiftpower.com/cache3/results/${eventId}_view.json?_=1602662575501`)
+async function getRiders(eventId: string, category: Category, primes: Prime[]): Promise<Rider[]> {
+    const res = await request('GET', `https://www.zwiftpower.com/cache3/results/${eventId}_view.json`)
     const {data}: { data: Rider[] } = JSON.parse(res.getBody('utf8'));
 
     data.forEach((rider) => {
@@ -97,12 +96,12 @@ async function getRiders(primes: Prime[]): Promise<Rider[]> {
         rider.zlprimespoints = getPrimesPoints(primes, rider.zwid);
     });
 
-    const riders = data.filter((rider) => rider.category === 'B' && rider.zlteam);
+    const riders = data.filter((rider) => rider.category === category && rider.zlteam);
 
     return riders;
 }
 
-async function getTeams(riders: Rider[]): Promise<Team[]> {
+function getTeams(riders: Rider[]): Team[] {
     function calcPoints(zlteam: string): number {
         let points = 0;
         riders.forEach((item) => {
@@ -142,15 +141,14 @@ function toHtml(teams: Team[]): string {
         <td>${team.points}</td>
     </tr>`);
     const table = `<table><tr><th>Name</th><th>Individual</th><th>Primes</th><th>Total</th></tr>${lines.join('')}</table>`;
-    return `<html><head><title>Zwift League</title><body>${table}</body></head>`;
+    return `<html lang="en"><head><title>Zwift League</title><body>${table}</body></head>`;
 }
 
-async function go() {
-    const primes = await getPrimes();
-    const riders = await getRiders(primes);
-    const teams = await getTeams(riders);
+export async function go(eventId: string, category: Category): Promise<Team[]> {
+    const primes = await getPrimes(eventId, category);
+    const riders = await getRiders(eventId, category, primes);
+    const teams = getTeams(riders);
 
-    console.log(toHtml(teams));
+    return teams;
 }
 
-go();
