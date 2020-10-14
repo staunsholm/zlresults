@@ -61,8 +61,13 @@ const individualRiderScores = [
 ];
 
 async function getPrimes(eventId:string, category: string): Promise<Prime[]> {
-    console.log('getPrimes1');
-    const res = await request('GET', `https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
+    let res;
+    try {
+        res = await request('GET', `https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
+    }
+    catch(e) {
+        console.log({e});
+    }
     console.log('getPrimes2');
     const {data}: { data: Prime[] } = JSON.parse(res.getBody('utf8'));
 
