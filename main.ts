@@ -61,7 +61,9 @@ const individualRiderScores = [
 ];
 
 async function getPrimes(eventId:string, category: string): Promise<Prime[]> {
+    console.log('getPrimes1');
     const res = await request('GET', `https://www.zwiftpower.com/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
+    console.log('getPrimes2');
     const {data}: { data: Prime[] } = JSON.parse(res.getBody('utf8'));
 
     // 6 = Watopia KOM Forward
@@ -69,6 +71,7 @@ async function getPrimes(eventId:string, category: string): Promise<Prime[]> {
     // 38 = Titans Grove Forward
     const subset = data.filter((prime) => [6, 9, 38].indexOf(prime.sprint_id) === -1);
 
+    console.log('getPrimes3');
     return subset;
 }
 
@@ -85,7 +88,9 @@ function getPrimesPoints(primes: Prime[], zwid: number): number {
 }
 
 async function getRiders(eventId: string, category: Category, primes: Prime[]): Promise<Rider[]> {
+    console.log('getRiders1');
     const res = await request('GET', `https://www.zwiftpower.com/cache3/results/${eventId}_view.json`)
+    console.log('getRiders2');
     const {data}: { data: Rider[] } = JSON.parse(res.getBody('utf8'));
 
     data.forEach((rider) => {
@@ -98,6 +103,7 @@ async function getRiders(eventId: string, category: Category, primes: Prime[]): 
 
     const riders = data.filter((rider) => rider.category === category && rider.zlteam);
 
+    console.log('getRiders3');
     return riders;
 }
 
