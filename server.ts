@@ -12,13 +12,13 @@ app.use("*", (req, res) => {
     const category = req.query.category as Category;
 
     if (!eventId || !category) {
-        res.send('example params: ?eventId=1121811&category=B')
+        res.end('example params: ?eventId=1121811&category=B')
         return;
     }
 
     go(eventId, category).then((result) => {
             res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(result));
+            res.end(JSON.stringify(result));
         }
     );
 });
