@@ -1,0 +1,18 @@
+{
+  "name": "zwiftleague",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.14.162",
+    "@types/node": "^14.11.8",
+    "lodash": "^4.17.20",
+    "then-request": "^6.0.2"
+  }
+}
