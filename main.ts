@@ -60,6 +60,8 @@ const individualRiderScores = [
     40, 35, 30, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2
 ];
 
+
+
 async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
     const res = await fetch(`https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
     const {data}: { data: Prime[] } = await res.json();
@@ -69,6 +71,22 @@ async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
     // 38 = Titans Grove Forward
     const subset = data.filter((prime) => [6, 9, 38].indexOf(prime.sprint_id) === -1);
     return subset;
+}
+
+function getPrimes2(eventId: string, category: string) {
+    fetch(`https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`)
+        .then((res) => {
+            res.json().then((json) => {
+                const {data}: { data: Prime[] } = json;
+
+                // 6 = Watopia KOM Forward
+                // 9 = Valcano Climb
+                // 38 = Titans Grove Forward
+                const subset = data.filter((prime) => [6, 9, 38].indexOf(prime.sprint_id) === -1);
+
+                console.log(subset);
+            })
+        });
 }
 
 function getPrimesPoints(primes: Prime[], zwid: number): number {
@@ -143,6 +161,8 @@ function toHtml(teams: Team[]): string {
 }
 
 export async function go(eventId: string, category: Category): Promise<Team[]> {
+    getPrimes2(eventId, category);
+
     const primes = await getPrimes(eventId, category);
     const riders = await getRiders(eventId, category, primes);
     const teams = getTeams(riders);
