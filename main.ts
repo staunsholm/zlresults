@@ -1,4 +1,4 @@
-import request from 'then-request';
+import fetch from 'node-fetch';
 import * as _ from 'lodash';
 
 export type Category = 'A' | 'B' | 'C' | 'D' | 'E';
@@ -60,23 +60,14 @@ const individualRiderScores = [
     40, 35, 30, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2
 ];
 
-async function getPrimes(eventId:string, category: string): Promise<Prime[]> {
-    let res;
-    try {
-        res = await request('GET', `https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
-    }
-    catch(e) {
-        console.log({e});
-    }
-    console.log('getPrimes2');
-    const {data}: { data: Prime[] } = JSON.parse(res.getBody('utf8'));
+async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
+    const res = await fetch(`https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`);
+    const {data}: { data: Prime[] } = await res.json();
 
     // 6 = Watopia KOM Forward
     // 9 = Valcano Climb
     // 38 = Titans Grove Forward
     const subset = data.filter((prime) => [6, 9, 38].indexOf(prime.sprint_id) === -1);
-
-    console.log('getPrimes3');
     return subset;
 }
 
@@ -93,10 +84,8 @@ function getPrimesPoints(primes: Prime[], zwid: number): number {
 }
 
 async function getRiders(eventId: string, category: Category, primes: Prime[]): Promise<Rider[]> {
-    console.log('getRiders1');
-    const res = await request('GET', `https://www.zwiftpower.com:443/cache3/results/${eventId}_view.json`)
-    console.log('getRiders2');
-    const {data}: { data: Rider[] } = JSON.parse(res.getBody('utf8'));
+    const res = await fetch(`https://www.zwiftpower.com:443/cache3/results/${eventId}_view.json`);
+    const {data}: { data: Rider[] } = await res.json();
 
     data.forEach((rider) => {
         const {name} = rider;
@@ -107,8 +96,6 @@ async function getRiders(eventId: string, category: Category, primes: Prime[]): 
     });
 
     const riders = data.filter((rider) => rider.category === category && rider.zlteam);
-
-    console.log('getRiders3');
     return riders;
 }
 
