@@ -21,15 +21,6 @@ async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
 function getPrimesPoints(primes: Prime[], zwid: number): number {
   let primesPoints = 0;
   primes.forEach((prime: Prime) => {
-    if (zwid === 2303648)
-      console.log(
-        prime.rider_1.zwid,
-        prime.rider_2.zwid,
-        prime.rider_3.zwid,
-        prime.rider_4.zwid,
-        prime.rider_5.zwid,
-        zwid
-      );
     primesPoints += prime.rider_1.zwid === zwid ? 5 : 0;
     primesPoints += prime.rider_2.zwid === zwid ? 4 : 0;
     primesPoints += prime.rider_3.zwid === zwid ? 3 : 0;
