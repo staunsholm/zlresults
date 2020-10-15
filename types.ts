@@ -50,5 +50,6 @@ export type Team = {
   zlteam: string;
   points: number;
   individualpoints: number;
+  teampoints: number;
   primespoints: number;
 };
