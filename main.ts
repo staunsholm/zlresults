@@ -42,10 +42,10 @@ async function getRiders(
 
   data.forEach((rider) => {
     const { name } = rider;
-    rider.zlteam = name.substring(
+    rider.zlteam = normalizeTeamName(name.substring(
       name.lastIndexOf("(") + 1,
       name.lastIndexOf(")")
-    );
+    ));
     const pos = rider.position_in_cat;
     rider.zlscore = pos < 30 ? individualRiderScores[pos - 1] : 1;
     rider.zlprimespoints = getPrimesPoints(primes, rider.zwid);
@@ -114,12 +114,21 @@ export function toHtml(teams: Team[]): string {
   return `<html lang="en"><head><title>Zwift League</title></head><body>${table}</body></html>`;
 }
 
+function normalizeTeamName(teamName: string) {
+  return teamName.toLowerCase();
+}
+
 export async function getTeamResults(
-  eventId: string,
+  eventIds: string[],
   category: Category
 ): Promise<Team[]> {
-  const primes = await getPrimes(eventId, category);
-  const riders = await getRiders(eventId, category, primes);
+  const riders: Rider[] = [];
+
+  for (const eventId of eventIds) {
+    const primes = await getPrimes(eventId, category);
+    riders.push(...(await getRiders(eventId, category, primes)));
+  }
+
   const teams = getTeams(riders);
 
   return teams;

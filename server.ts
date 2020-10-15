@@ -12,12 +12,14 @@ app.use("/teamresults/json", (req, res) => {
   const eventId = req.query.eventId as string;
   const category = req.query.category as Category;
 
+  const eventIds = eventId.split(',');
+
   if (!eventId || !category) {
     res.end("example params: ?eventId=1121811&category=B");
     return;
   }
 
-  getTeamResults(eventId, category).then((result) => {
+  getTeamResults(eventIds, category).then((result) => {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(result));
   });
@@ -27,12 +29,14 @@ app.use("/teamresults/html", (req, res) => {
   const eventId = req.query.eventId as string;
   const category = req.query.category as Category;
 
+  const eventIds = eventId.split(',');
+
   if (!eventId || !category) {
     res.end("example params: ?eventId=1121811&category=B");
     return;
   }
 
-  getTeamResults(eventId, category).then((result) => {
+  getTeamResults(eventIds, category).then((result) => {
     res.end(toHtml(result));
   });
 });
