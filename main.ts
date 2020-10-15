@@ -73,22 +73,6 @@ async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
     return subset;
 }
 
-function getPrimes2(eventId: string, category: string) {
-    fetch(`https://www.zwiftpower.com:443/api3.php?do=event_primes&zid=${eventId}&category=${category}&prime_type=msec`)
-        .then((res) => {
-            res.json().then((json) => {
-                const {data}: { data: Prime[] } = json;
-
-                // 6 = Watopia KOM Forward
-                // 9 = Valcano Climb
-                // 38 = Titans Grove Forward
-                const subset = data.filter((prime) => [6, 9, 38].indexOf(prime.sprint_id) === -1);
-
-                console.log(subset);
-            })
-        });
-}
-
 function getPrimesPoints(primes: Prime[], zwid: number): number {
     let primesPoints = 0;
     primes.forEach((prime: Prime) => {
@@ -161,8 +145,6 @@ function toHtml(teams: Team[]): string {
 }
 
 export async function go(eventId: string, category: Category): Promise<Team[]> {
-    getPrimes2(eventId, category);
-
     const primes = await getPrimes(eventId, category);
     const riders = await getRiders(eventId, category, primes);
     const teams = getTeams(riders);
