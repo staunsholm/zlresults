@@ -12,7 +12,7 @@ import {
 } from "semantic-ui-react";
 import { Team, ZwiftEvent } from "../../types";
 import { getEvents, getEventTeamResult } from "./service";
-import {useWindowHeight} from "@react-hook/window-size";
+import { useWindowHeight } from "@react-hook/window-size";
 
 const rounds: DropdownItemProps[] = [
   {
@@ -52,6 +52,8 @@ function App() {
       }));
       setEventList(list);
 
+      setEvent(undefined);
+
       setIsLoading(false);
     })();
   }, [round]);
@@ -59,6 +61,7 @@ function App() {
   useEffect(() => {
     (async () => {
       if (!event) {
+        setEventTeamResult(undefined);
         return;
       }
 
@@ -78,7 +81,7 @@ function App() {
   };
 
   return (
-    <Container style={{ marginTop: "3rem", marginBottom: "3rem" }}>
+    <Container style={{ padding: "1rem 0" }}>
       <Dimmer active={isLoading}>
         <Loader />
       </Dimmer>
@@ -114,7 +117,7 @@ function App() {
             <Table.Row>
               <Table.HeaderCell>#</Table.HeaderCell>
               <Table.HeaderCell>Team</Table.HeaderCell>
-              <Table.HeaderCell textAlign="right">Placings</Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">Points</Table.HeaderCell>
               <Table.HeaderCell textAlign="right">Primes</Table.HeaderCell>
               <Table.HeaderCell textAlign="right">Total</Table.HeaderCell>
               <Table.HeaderCell textAlign="right">Team</Table.HeaderCell>
@@ -126,7 +129,9 @@ function App() {
               <Table.Row key={team.zlteam}>
                 <Table.Cell>{pos + 1}.</Table.Cell>
                 <Table.Cell>{team.zlteam}</Table.Cell>
-                <Table.Cell textAlign="right">{team.individualpoints}</Table.Cell>
+                <Table.Cell textAlign="right">
+                  {team.individualpoints}
+                </Table.Cell>
                 <Table.Cell textAlign="right">{team.primespoints}</Table.Cell>
                 <Table.Cell textAlign="right">{team.points}</Table.Cell>
                 <Table.Cell textAlign="right">{team.teampoints}</Table.Cell>
