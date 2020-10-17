@@ -105,14 +105,14 @@ function App() {
       <Divider />
 
       {eventTeamResult && (
-        <Table>
+        <Table unstackable>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>#</Table.HeaderCell>
               <Table.HeaderCell>Team</Table.HeaderCell>
-              <Table.HeaderCell textAlign="right">Individual</Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">Placings</Table.HeaderCell>
               <Table.HeaderCell textAlign="right">Primes</Table.HeaderCell>
-              <Table.HeaderCell textAlign="right">Points</Table.HeaderCell>
+              <Table.HeaderCell textAlign="right">Total</Table.HeaderCell>
               <Table.HeaderCell textAlign="right">Team</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
