@@ -12,6 +12,7 @@ import {
 } from "semantic-ui-react";
 import { Team, ZwiftEvent } from "../../types";
 import { getEvents, getEventTeamResult } from "./service";
+import {useWindowHeight} from "@react-hook/window-size";
 
 const rounds: DropdownItemProps[] = [
   {
@@ -33,6 +34,9 @@ function App() {
   const [event, setEvent] = useState<ZwiftEvent>();
   const [eventTeamResult, setEventTeamResult] = useState<Team[]>();
   const [round, setRound] = useState<number>(1);
+
+  const windowHeight = useWindowHeight();
+  const isDropdownSearchable = windowHeight > 700;
 
   useEffect(() => {
     (async () => {
@@ -85,7 +89,7 @@ function App() {
       <Dropdown
         placeholder="Select round"
         fluid
-        search
+        search={isDropdownSearchable}
         selection
         options={rounds}
         onChange={handleRoundChange}
@@ -96,7 +100,7 @@ function App() {
         style={{ marginTop: "1rem" }}
         placeholder="Select an event"
         fluid
-        search
+        search={isDropdownSearchable}
         selection
         options={eventList}
         onChange={handleEventChange}
