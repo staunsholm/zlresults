@@ -34,6 +34,6 @@ app.use("/events", async (req, res) => {
   res.end(JSON.stringify(await getEvents(round)));
 });
 
-app.use(express.static("public"));
+app.use(express.static("public/build"));
 
 app.listen(PORT, () => console.log(`hosting @${PORT}`));
