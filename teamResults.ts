@@ -38,43 +38,48 @@ async function getRiders(
   const res = await fetch(
     `https://www.zwiftpower.com:443/cache3/results/${eventId}_view.json`
   );
+
+  if (!res.ok) {
+    return [];
+  }
+
   const { data }: { data: Rider[] } = await res.json();
 
   data.forEach((rider) => {
     const { name } = rider;
-    rider.zlteam = normalizeTeamName(name.substring(
-      name.lastIndexOf("(") + 1,
-      name.lastIndexOf(")")
-    ));
+    rider.zlteam = name
+      .substring(name.lastIndexOf("(") + 1, name.lastIndexOf(")"))
+      .trim();
+    rider.zlteamnormalized = rider.zlteam.toLowerCase();
     const pos = rider.position_in_cat;
     rider.zlscore = pos < 30 ? individualRiderScores[pos - 1] : 1;
     rider.zlprimespoints = getPrimesPoints(primes, rider.zwid);
   });
 
   const riders = data.filter(
-    (rider) => rider.category === category && rider.zlteam
+    (rider) => rider.category === category && rider.zlteamnormalized
   );
   return riders;
 }
 
 function getTeams(riders: Rider[]): Team[] {
-  function calcPoints(zlteam: string): number {
+  function calcPoints(zlteamnormalized: string): number {
     let points = 0;
     riders.forEach((item) => {
-      if (item.zlteam === zlteam) {
+      if (item.zlteamnormalized === zlteamnormalized) {
         points += item.zlscore;
       }
     });
     return points;
   }
 
-  const uniqByZLTeam = _.uniqBy(riders, "zlteam");
+  const uniqByTeam = _.uniqBy(riders, "zlteam");
 
-  const teams: Team[] = uniqByZLTeam.map(
+  const teams: Team[] = uniqByTeam.map(
     (team): Team => {
-      const individualpoints = calcPoints(team.zlteam);
+      const individualpoints = calcPoints(team.zlteamnormalized);
       const primespoints = riders
-        .filter((rider) => rider.zlteam === team.zlteam)
+        .filter((rider) => rider.zlteamnormalized === team.zlteamnormalized)
         .reduce((prev, rider) => prev + rider.zlprimespoints, 0);
 
       return {
@@ -91,31 +96,9 @@ function getTeams(riders: Rider[]): Team[] {
 
   sortedTeams.forEach((team, index) => {
     team.teampoints = index < 20 ? 20 - index : 0;
-    team.points += team.teampoints;
   });
 
   return sortedTeams;
-}
-
-export function toHtml(teams: Team[]): string {
-  const lines = teams.map(
-    (team, index) => `<tr>
-        <td>${index + 1}.</td>
-        <td>${team.zlteam}</td>
-        <td>${team.individualpoints}</td>
-        <td>${team.primespoints}</td>
-        <td>${team.teampoints}</td>
-        <td>${team.points}</td>
-    </tr>`
-  );
-  const header =
-    "<tr><th>Position</th><th>Name</th><th>Individual</th><th>Primes</th><th>Team</th><th>Total</th></tr>";
-  const table = `<table>${header}${lines.join("")}</table>`;
-  return `<html lang="en"><head><title>Zwift League</title></head><body>${table}</body></html>`;
-}
-
-function normalizeTeamName(teamName: string) {
-  return teamName.toLowerCase();
 }
 
 export async function getTeamResults(

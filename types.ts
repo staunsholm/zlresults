@@ -30,8 +30,19 @@ export type Rider = {
   zeff: number;
   category: Category;
   zlteam?: string;
+  zlteamnormalized: string;
   zlscore?: number;
   zlprimespoints?: number;
+};
+
+export type ZwiftEvent = {
+  name: string;
+  eventId: string;
+  time: string;
+  length: number;
+  categories: string;
+  route: string;
+  round: number;
 };
 
 export type Prime = {
