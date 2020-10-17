@@ -64,3 +64,8 @@ export type Team = {
   teampoints: number;
   primespoints: number;
 };
+
+export type LiveRider = {
+  name: string;
+  zwid: number;
+};

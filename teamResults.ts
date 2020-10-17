@@ -1,7 +1,16 @@
 import fetch from "node-fetch";
 import * as _ from "lodash";
-import { Category, Prime, Rider, Team } from "./types";
+import { Category, LiveRider, Prime, Rider, Team } from "./types";
 import { individualRiderScores } from "./constants";
+
+async function getLiveRiders(eventId): Promise<LiveRider[]> {
+  const res = await fetch(
+    `https://www.zwiftpower.com/cache3/live/results_${eventId}.json`
+  );
+  const { data }: { data: LiveRider[] } = await res.json();
+
+  return data;
+}
 
 async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
   const res = await fetch(
@@ -43,16 +52,27 @@ async function getRiders(
     return [];
   }
 
+  // get name from live feed (as it will have the correct team name in it)
+  const liveRiders = await getLiveRiders(eventId);
+
   const { data }: { data: Rider[] } = await res.json();
 
   data.forEach((rider) => {
-    const { name } = rider;
+    const liveRider = _.find(liveRiders, { zwid: rider.zwid });
+    if (!liveRider) {
+      return;
+    }
+
+    const { name } = liveRider;
+    rider.name = name;
     rider.zlteam = name
       .substring(name.lastIndexOf("(") + 1, name.lastIndexOf(")"))
       .trim();
     rider.zlteamnormalized = rider.zlteam.toLowerCase();
+
     const pos = rider.position_in_cat;
     rider.zlscore = pos < 30 ? individualRiderScores[pos - 1] : 1;
+
     rider.zlprimespoints = getPrimesPoints(primes, rider.zwid);
   });
 
@@ -73,7 +93,7 @@ function getTeams(riders: Rider[]): Team[] {
     return points;
   }
 
-  const uniqByTeam = _.uniqBy(riders, "zlteam");
+  const uniqByTeam = _.uniqBy(riders, "zlteamnormalized");
 
   const teams: Team[] = uniqByTeam.map(
     (team): Team => {
