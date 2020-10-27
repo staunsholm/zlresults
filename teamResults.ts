@@ -21,8 +21,13 @@ async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
   // 6 = Watopia KOM Forward
   // 9 = Valcano Climb
   // 38 = Titans Grove Forward
+  // 1 = Richmond Sprint
+  // 4 = Richmond Sprint 2
+  // 26 = Richmond Libby Hill
+  // 27 = Richmond 23rd Street
+
   const subset = data.filter(
-    (prime) => [6, 9, 38].indexOf(prime.sprint_id) !== -1
+    (prime) => [6, 9, 38, 1, 4, 26, 27].indexOf(prime.sprint_id) !== -1
   );
   return subset;
 }
