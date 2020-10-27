@@ -13,24 +13,9 @@ import {
 import { Team, ZwiftEvent } from "../../types";
 import { getEvents, getEventTeamResult } from "./service";
 import { useWindowHeight } from "@react-hook/window-size";
+import { rounds } from "./constants";
 
-const rounds: DropdownItemProps[] = [
-  {
-    key: 1,
-    text: "Round 1 - October 12-13",
-    value: 1,
-  },
-  {
-    key: 2,
-    text: "Round 2 - October 19-20",
-    value: 2,
-  },
-  {
-    key: 3,
-    text: "Round 3 - October 26-27",
-    value: 3,
-  },
-];
+const defaultRound = rounds[rounds.length - 1].value as number;
 
 function App() {
   const [events, setEvents] = useState<ZwiftEvent[]>([]);
@@ -38,7 +23,7 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [event, setEvent] = useState<ZwiftEvent>();
   const [eventTeamResult, setEventTeamResult] = useState<Team[]>();
-  const [round, setRound] = useState<number>(1);
+  const [round, setRound] = useState<number>(defaultRound);
 
   const windowHeight = useWindowHeight();
   const isDropdownSearchable = windowHeight > 700;
@@ -91,7 +76,7 @@ function App() {
         <Loader />
       </Dimmer>
 
-      <Header size="huge">Zwift League - Qualification</Header>
+      <Header size="huge">Zwift League Results</Header>
       <Divider />
 
       <Dropdown
