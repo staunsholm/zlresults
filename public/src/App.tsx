@@ -25,6 +25,11 @@ const rounds: DropdownItemProps[] = [
     text: "Round 2 - October 19-20",
     value: 2,
   },
+  {
+    key: 3,
+    text: "Round 3 - October 26-27",
+    value: 3,
+  },
 ];
 
 function App() {
