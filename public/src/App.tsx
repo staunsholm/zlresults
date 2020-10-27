@@ -76,7 +76,7 @@ function App() {
         <Loader />
       </Dimmer>
 
-      <Header size="huge">Zwift League Results</Header>
+      <Header size="huge">Zwift League Results - Category B</Header>
       <Divider />
 
       <Dropdown
