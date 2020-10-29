@@ -35,11 +35,11 @@ async function getPrimes(eventId: string, category: string): Promise<Prime[]> {
 function getPrimesPoints(primes: Prime[], zwid: number): number {
   let primesPoints = 0;
   primes.forEach((prime: Prime) => {
-    primesPoints += prime.rider_1.zwid === zwid ? 5 : 0;
-    primesPoints += prime.rider_2.zwid === zwid ? 4 : 0;
-    primesPoints += prime.rider_3.zwid === zwid ? 3 : 0;
-    primesPoints += prime.rider_4.zwid === zwid ? 2 : 0;
-    primesPoints += prime.rider_5.zwid === zwid ? 1 : 0;
+    primesPoints += prime.rider_1.zwid === zwid ? 3 : 0;
+    primesPoints += prime.rider_2.zwid === zwid ? 2 : 0;
+    primesPoints += prime.rider_3.zwid === zwid ? 1 : 0;
+    //primesPoints += prime.rider_4.zwid === zwid ? 0 : 0;
+    //primesPoints += prime.rider_5.zwid === zwid ? 0 : 0;
   });
   return primesPoints;
 }
